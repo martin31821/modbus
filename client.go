@@ -432,6 +432,25 @@ func (mb *client) ReadFIFOQueue(address uint16) (results []byte, err error) {
 	return
 }
 
+// Request:
+//  Function code : 1 byte (0x08)
+//  Data          : n bytes
+// Response:
+//  Function Code : 1 byte (0x08)
+//  Data          : n bytes
+func (mb *client) SendDiagnosisBlock(address uint16, data ...byte) (results []byte, err error) {
+	request := ProtocolDataUnit{
+		FunctionCode: FuncCodeDiagnosis,
+		Data:         data,
+	}
+	response, err := mb.send(&request)
+	if err != nil {
+		return
+	}
+	results = response.Data
+	return
+}
+
 // Helpers
 
 // send sends request and checks possible exception in the response.
